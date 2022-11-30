@@ -261,7 +261,7 @@ MAX_RETRY=5
 # default for delay between commands
 CLI_DELAY=3
 # chaincode name
-CC_NAME="quotation"
+#CC_NAME="quotation"
 # chaincode path
 CC_SRC_PATH="../chaincodes"
 # chaincode sequence
@@ -368,10 +368,10 @@ elif [ "$MODE" == "createChannels" ]; then
   echo "CLI timeout of '${MAX_RETRY}' tries and CLI delay of '${CLI_DELAY}' seconds and using database '${DATABASE} ${CRYPTO_MODE}"
   echo
 elif [ "$MODE" == "deployCCs" ]; then
-  echo "deploying quotation chaincode on the channels"
+  echo "deploying chaincode on the channels"
   echo
 elif [ "$MODE" == "invokeCC" ]; then
-  echo "invoking quotation smartcontract transaction"
+  echo "invoking smartcontract transaction"
   echo
 elif [ "$MODE" == "down" ]; then
   echo "Stopping network"
@@ -386,7 +386,7 @@ if [ "${MODE}" == "up" ]; then
 elif [ "${MODE}" == "createChannels" ]; then
   createChannels
 elif [ "${MODE}" == "deployCCs" ]; then
-  deployCCs
+  deployCCs 
 elif [ "${MODE}" == "invokeCC" ]; then
   invokeCC
 elif [ "${MODE}" == "down" ]; then

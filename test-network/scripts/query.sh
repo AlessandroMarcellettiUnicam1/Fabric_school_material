@@ -58,7 +58,7 @@ provideQuotation() {
 
 
 #invokeFunction 1 1 provideQuotation "quotation1" "50"
-invokeFunction 3 1 getQuotation "quotation1"
+invokeFunction 1 1 getQuotation "quotation1"
 
 
 
