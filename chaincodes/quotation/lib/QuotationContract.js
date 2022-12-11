@@ -78,47 +78,30 @@ class QuotationContract extends Contract {
     // Transaction submitter: SupplierA or SupplierB
     async provideQuotation(ctx, id, newPrice) {
         const submitter = ctx.stub.getCreator().mspid
-
         if(!submitter.includes('Supplier')) {
     	    throw new Error(`Only the supplier can provide a quotation`)
         }
-
-    	const quotation = await ctx.stub.getState(id)
-    	if (!quotation || quotation.length === 0) {
-            throw new Error(`The quotation ${id} does not exist`)
-        }
-    	
-    	const quotationProvided = {
-            ID: id,
-            Type: 'shoes', 
-            Price: newPrice,
-            Issuer: submitter,
-            Quantity: 100,
-            State: 'provided'
-        }
-
-    	await ctx.stub.putState(id, Buffer.from(JSON.stringify(quotationProvided)))
-    	return JSON.stringify(quotationProvided)
+        const quotationBuffer = await ctx.stub.getState(id) 
+   	    const quotationString = quotationBuffer.toString()	
+        const quotation = JSON.parse(quotationString)		
+        quotation.Price = newPrice
+        quotation.Issuer = submitter					
+        await ctx.stub.putState(id, Buffer.from(JSON.stringify(quotation))) 
     }
     
     // Transaciton submitter: Agency
     async acceptQuotation(ctx, quotationID, newState) {
         const submitter = ctx.stub.getCreator().mspid
-
     	if(!submitter.includes('Agency')) {
     	     throw new Error(`Only the agency can update a quotation`)
         }
-
     	const quotationBuffer = await ctx.stub.getState(quotationID)
     	const quotationString = quotationBuffer.toString()
-        const quotationJSON = JSON.parse(quotationString)
+        const quotation = JSON.parse(quotationString)
+           quotation.State = newState
+    	await ctx.stub.putState(quotationID, Buffer.from(JSON.stringify(quotation)))
+    	return quotation
 
-        quotationJSON.State = newState
-
-        const quotationJSONString = JSON.stringify(quotationJSON)
-
-    	await ctx.stub.putState(quotationID, Buffer.from(quotationJSONString))
-    	return quotationJSONString
     }
     
     async deleteLedger(ctx, id) {
@@ -126,7 +109,7 @@ class QuotationContract extends Contract {
     	if (!quotation || quotation.length === 0) {
             throw new Error(`The quotation ${id} does not exist`)
         }
-    	return ctx.stub.deleteState(id.toString())
+    	return ctx.stub.deleteState(id)
     }
 
 }
